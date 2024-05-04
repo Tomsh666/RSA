@@ -1,6 +1,5 @@
 from cipher import encrypt, decrypt
 
-
 def main():
     print("1. Encrypt")
     print("2. Decrypt")
