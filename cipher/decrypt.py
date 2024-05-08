@@ -1,2 +1,2 @@
-def decrypt():
+def decrypt(file, n, d):
     print(1)

@@ -1,7 +1,7 @@
 import os
 
 from cipher import encrypt, decrypt
-from Crypto.Util.number import getPrime, GCD
+from Crypto.Util.number import getPrime, GCD, inverse
 
 
 def main():
@@ -15,17 +15,17 @@ def main():
             break
         else:
             e += 1
+    d = inverse(e, phi)
     print("1. Encrypt")
     print("2. Decrypt")
     print("3. Sign file")
     print("4. Verify signature")
-    print("5. Show parameters")
     choice = input("Select option: ")
     if choice == "1":
         aes_key = os.urandom(32)
-        encrypt("input.txt", n, e, aes_key)
+        encrypt("plain_text.txt", n, e, aes_key)
     elif choice == "2":
-        decrypt()
+        decrypt("cipher_text.bin", n, d)
     elif choice == "3":
         pass
     elif choice == "4":

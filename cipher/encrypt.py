@@ -1,18 +1,44 @@
 from Crypto.Util import Padding, asn1
+from pyasn1.type import univ
 from Crypto.Cipher import AES
 import os
+from pyasn1.codec.ber import encoder
 
-# TODO: remake asn1 header
-def add_asn1_header(ciphertext, iv, encrypted_aes_key):
-    asn1_header = asn1.DerSequence([iv, encrypted_aes_key])
-    asn1_header_bytes = asn1_header.encode()
+
+def add_asn1_header(n, e, encrypted_aes_key, iv, ciphertext):
+    rsa_oid = univ.ObjectIdentifier('1.2.840.113549.1.1.1')
+    rsa_encoded_oid = encoder.encode(rsa_oid)
+    aes_oid = univ.ObjectIdentifier('2.16.840.1.101.3.4.1.42')
+    aes_encoded_oid = encoder.encode(aes_oid)
+
+    asn1_structure = asn1.DerSequence([
+        asn1.DerSequence([
+            asn1.DerSequence([
+                asn1.DerOctetString(rsa_encoded_oid),
+                asn1.DerSequence([
+                    asn1.DerInteger(n),
+                    asn1.DerInteger(e),
+                ]),
+                asn1.DerSequence([]),
+                asn1.DerSequence([
+                    asn1.DerInteger(encrypted_aes_key)
+                ]),
+            ]),
+        ]),
+        asn1.DerSequence([
+            asn1.DerOctetString(aes_encoded_oid),
+            asn1.DerInteger(len(ciphertext)),
+        ])
+    ])
+
+    asn1_header_bytes = asn1_structure.encode()
     encrypted_data_with_header = asn1_header_bytes + iv + ciphertext
     return encrypted_data_with_header
 
 
 def encrypt(file, n, e, key):
     input_file = file
-    output_file = "output.bin"
+    output_file = "cipher_text.bin"
     with open(input_file, 'rb') as f:
         plain_text = f.read()
 
@@ -23,9 +49,7 @@ def encrypt(file, n, e, key):
     encrypted_text = cipher.encrypt(padded_text)
 
     aes_key = int.from_bytes(key, byteorder='big')
-    c = pow(aes_key, e, n)
-    encrypted_aes_key = c.to_bytes((n.bit_length() + 7) // 8, byteorder='big')
-
-    encrypted_data_with_header = add_asn1_header(encrypted_text, iv, encrypted_aes_key)
+    encrypted_aes_key = pow(aes_key, e, n)
+    encrypted_data_with_header = add_asn1_header(n, e, encrypted_aes_key, iv, encrypted_text)
     with open(output_file, 'wb') as f:
         f.write(encrypted_data_with_header)
