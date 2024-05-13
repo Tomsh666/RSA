@@ -1,4 +1,5 @@
 RSA Encryption and Signature Program
+
 This program implements RSA encryption and decryption, as well as electronic signature generation and verification using the RSA algorithm. The program uses the AES-256 symmetric algorithm in CBC mode for file encryption, and the SHA256 hash algorithm for electronic signature generation.
 
 Functionality
