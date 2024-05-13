@@ -9,6 +9,7 @@ def decrypt(cipher_file, n, d):
         asn_content = file.read(4 + asn_len)
         iv = file.read(AES.block_size)
         ciphertext = file.read()
+
     asn_seq1 = asn1.DerSequence()
     asn_seq1.decode(asn_content)
     asn_set = asn1.DerSetOf()

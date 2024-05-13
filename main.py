@@ -31,7 +31,7 @@ def main():
             decrypt("cipher_text.bin", n, d)
             print("Done")
         elif choice == "3":
-            sign("plain_text.txt", n, d)
+            sign("plain_text.txt", n, e, d)
             print("Done")
         elif choice == "4":
             verify("plain_text.txt", "sign.bin", n, e)
