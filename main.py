@@ -1,6 +1,7 @@
 import os
 
 from cipher import encrypt, decrypt
+from sign import sign, verify
 from Crypto.Util.number import getPrime, GCD, inverse
 
 
@@ -30,8 +31,10 @@ def main():
             decrypt("cipher_text.bin", n, d)
             print("Done")
         elif choice == "3":
+            sign("plain_text.txt", n, d)
             print("Done")
         elif choice == "4":
+            verify("plain_text.txt", "sign.bin", n, e)
             print("Done")
         else:
             print("Wrong choice")

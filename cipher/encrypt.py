@@ -35,9 +35,8 @@ def add_asn1_header(n, e, encrypted_aes_key, iv, ciphertext):
 
 
 def encrypt(file, n, e, key):
-    input_file = file
     output_file = "cipher_text.bin"
-    with open(input_file, 'rb') as f:
+    with open(file, 'rb') as f:
         plain_text = f.read()
 
     # AES
