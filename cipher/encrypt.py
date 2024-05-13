@@ -2,7 +2,7 @@ from Crypto.Util import Padding, asn1
 from pyasn1.type import univ
 from Crypto.Cipher import AES
 import os
-from pyasn1.codec.ber import encoder
+from pyasn1.codec.der import encoder
 
 
 def add_asn1_header(n, e, encrypted_aes_key, iv, ciphertext):
@@ -12,7 +12,7 @@ def add_asn1_header(n, e, encrypted_aes_key, iv, ciphertext):
     aes_encoded_oid = encoder.encode(aes_oid)
 
     asn1_structure = asn1.DerSequence([
-        asn1.DerSequence([
+        asn1.DerSetOf({
             asn1.DerSequence([
                 asn1.DerOctetString(rsa_encoded_oid),
                 asn1.DerSequence([
@@ -24,15 +24,13 @@ def add_asn1_header(n, e, encrypted_aes_key, iv, ciphertext):
                     asn1.DerInteger(encrypted_aes_key)
                 ]),
             ]),
-        ]),
+        }),
         asn1.DerSequence([
             asn1.DerOctetString(aes_encoded_oid),
             asn1.DerInteger(len(ciphertext)),
         ])
     ])
-
-    asn1_header_bytes = asn1_structure.encode()
-    encrypted_data_with_header = asn1_header_bytes + iv + ciphertext
+    encrypted_data_with_header = asn1_structure.encode() + iv + ciphertext
     return encrypted_data_with_header
 
 
@@ -43,7 +41,7 @@ def encrypt(file, n, e, key):
         plain_text = f.read()
 
     # AES
-    iv = os.urandom(16)
+    iv = os.urandom(AES.block_size)
     cipher = AES.new(key, AES.MODE_CBC, iv)
     padded_text = Padding.pad(plain_text, AES.block_size)
     encrypted_text = cipher.encrypt(padded_text)

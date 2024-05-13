@@ -20,18 +20,22 @@ def main():
     print("2. Decrypt")
     print("3. Sign file")
     print("4. Verify signature")
-    choice = input("Select option: ")
-    if choice == "1":
-        aes_key = os.urandom(32)
-        encrypt("plain_text.txt", n, e, aes_key)
-    elif choice == "2":
-        decrypt("cipher_text.bin", n, d)
-    elif choice == "3":
-        pass
-    elif choice == "4":
-        pass
-    else:
-        print("Wrong choice")
+    while True:
+        choice = input("Select option: ")
+        if choice == "1":
+            aes_key = os.urandom(32)
+            encrypt("plain_text.txt", n, e, aes_key)
+            print("Done")
+        elif choice == "2":
+            decrypt("cipher_text.bin", n, d)
+            print("Done")
+        elif choice == "3":
+            print("Done")
+        elif choice == "4":
+            print("Done")
+        else:
+            print("Wrong choice")
+
 
 
 if __name__ == "__main__":
